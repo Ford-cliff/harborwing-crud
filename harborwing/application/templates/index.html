@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}
+<h1>HarborWing staff console</h1><p class="mut">Manage the reservation database without writing SQL.</p>
+<div class="grid">{% for n, e in ents.items() %}<div class="card"><a href="{{ url_for('list_', name=n) }}">{{ e.plural }}</a><div class="mut">{{ counts[n] }} records</div></div>{% endfor %}</div>
+<section><h3>Reference codes (externally managed)</h3>{% for k, v in codes.items() %}<p><b>{{ k }}:</b> {{ v|join(', ') }}</p>{% endfor %}</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block body %}
+<h1>{{ ent.plural }}</h1>
+<form class="bar" method="get"><input name="q" value="{{ q }}" placeholder="Search…">
+{% if ent.filter %}<select name="f"><option value="">All {{ ent.filter[2] }}</option>{% for o in ent.filter[1] %}<option {{ 'selected' if o == flt }}>{{ o }}</option>{% endfor %}</select>{% endif %}
+<button>Search</button>{% if not ent.readonly %}<a class="btn" href="{{ url_for('new', name=name) }}">+ New {{ ent.label }}</a>{% endif %}</form>
+<div class="scroll"><table><tr>{% for c in ent.cols %}<th>{{ c|replace('_',' ') }}</th>{% endfor %}<th></th></tr>
+{% for r in rows %}<tr>{% for c in ent.cols %}<td>{{ r[c] if r[c] is not none else '—' }}</td>{% endfor %}
+<td class="act">{% if name == 'reservation' %}<a href="{{ url_for('reservation_view', rid=r.reservation_id) }}">View</a>{% endif %}
+{% if not ent.readonly %}<a href="{{ url_for('edit', name=name, key=keys[loop.index0]) }}">Edit</a>
+<form method="post" action="{{ url_for('delete', name=name, key=keys[loop.index0]) }}" onsubmit="return confirm('Delete this {{ ent.label }}?')"><button class="link danger">Delete</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="{{ ent.cols|length + 1 }}">No records found.</td></tr>{% endfor %}</table></div>
+<p>{% if page > 1 %}<a href="{{ url_for('list_', name=name, q=q, f=flt, page=page-1) }}">‹ Previous</a>{% endif %} Page {{ page }}
+{% if more %}<a href="{{ url_for('list_', name=name, q=q, f=flt, page=page+1) }}">Next ›</a>{% endif %}</p>
+{% endblock %}

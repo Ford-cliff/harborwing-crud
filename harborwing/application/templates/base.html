@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HarborWing Staff</title>
+<style>
+:root{--bg:#fff;--fg:#1c2330;--mut:#667085;--line:#d8dde6;--pri:#0b5cad;--ok:#e6f4ea;--err:#fdeaea;--card:#f6f8fb}
+@media(prefers-color-scheme:dark){:root{--bg:#141a24;--fg:#e8ecf3;--mut:#9aa6b8;--line:#2d3748;--pri:#5aa2ff;--ok:#16301f;--err:#3b1a1a;--card:#1b2331}}
+body{margin:0;font:15px/1.45 system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+nav{display:flex;flex-wrap:wrap;gap:4px 14px;padding:10px 20px;background:var(--card);border-bottom:1px solid var(--line)}
+nav a{color:var(--pri);text-decoration:none}main{max-width:1100px;margin:0 auto;padding:16px 20px}
+table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;color:var(--mut)}.scroll{overflow-x:auto}
+input,select,button,.btn{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+button,.btn{background:var(--pri);color:#fff;border-color:var(--pri);cursor:pointer;text-decoration:none;display:inline-block}
+button.link{background:none;border:0;color:var(--pri);padding:0}button.danger{color:#d33}
+.act{white-space:nowrap}.act form{display:inline;margin-left:8px}.act a{margin-left:8px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.form{display:grid;gap:10px;max-width:520px}.form label{display:grid;gap:3px}
+.msg{padding:9px 12px;border-radius:6px;margin:8px 0}.msg.ok{background:var(--ok)}.msg.err{background:var(--err)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.card a{color:var(--pri);text-decoration:none;font-weight:600}.mut{color:var(--mut)}section{margin:22px 0}
+</style></head><body>
+<nav><a href="{{ url_for('index') }}"><b>HarborWing</b></a>
+{% for n, e in ents.items() %}<a href="{{ url_for('list_', name=n) }}">{{ e.plural }}</a>{% endfor %}</nav>
+<main>{% for cat, m in get_flashed_messages(with_categories=true) %}<div class="msg {{ cat }}">{{ m }}</div>{% endfor %}
+{% block body %}{% endblock %}</main></body></html>

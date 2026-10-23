@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block body %}
+<h1>{{ 'Edit' if key else 'New' }} {{ ent.label }}</h1>
+<form method="post" class="form">
+{% for f in fields %}<label>{{ f.label }}{{ ' *' if f.req }}
+{% if f.locked %}<input value="{{ form.get(f.name, '') }}" readonly>
+{% elif f.type == 'select' %}<select name="{{ f.name }}">{% if not f.req %}<option value="">(none)</option>{% endif %}
+{% for v, l in f.opts %}<option value="{{ v }}" {{ 'selected' if form.get(f.name, '')|string == v|string }}>{{ l }}</option>{% endfor %}</select>
+{% else %}<input name="{{ f.name }}" value="{{ form.get(f.name, '') }}"
+ type="{{ {'int':'number','decimal':'number','date':'date','datetime':'datetime-local','email':'email'}.get(f.type,'text') }}"
+ {{ 'step=0.01' if f.type == 'decimal' }}>{% endif %}</label>{% endfor %}
+<div><button>Save</button> <a href="{{ url_for('list_', name=name) }}">Cancel</a></div></form>
+{% endblock %}

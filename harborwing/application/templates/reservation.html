@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% block body %}
+<h1>Reservation #{{ r.reservation_id }}</h1>
+<div class="card"><b>{{ r.passenger_name }}</b> · {{ r.email_address }} · {{ r.phone_number }}<br>
+Agent: {{ r.agent_name or '(direct booking)' }} · Status {{ r.status_code }} · Ticket {{ r.ticket_type_code }} · Class {{ r.travel_class_code }} · Party of {{ r.party_size }} · Created {{ r.created_at }} UTC<br>
+<a href="{{ url_for('edit', name='reservation', key=r.reservation_id) }}">Edit reservation</a></div>
+
+<section><h2>Payments ({{ pays|length }}) — linked total {{ total }}</h2>
+<p class="mut">Shared payments are not apportioned between reservations (known schema limitation).</p>
+<table><tr><th>ID</th><th>Status</th><th>Date</th><th>Amount</th><th></th></tr>
+{% for p in pays %}<tr><td>{{ p.payment_id }}</td><td>{{ p.payment_status_code }}</td><td>{{ p.payment_date }}</td><td>{{ p.payment_amount }}</td>
+<td class="act"><form method="post" action="{{ url_for('res_pay_remove', rid=r.reservation_id, pid=p.payment_id) }}"><button class="link danger">Unlink</button></form></td></tr>
+{% else %}<tr><td colspan="5">No payments linked.</td></tr>{% endfor %}</table>
+<form class="bar" method="post" action="{{ url_for('res_pay_add', rid=r.reservation_id) }}"><select name="payment_id">{% for o in free_pays %}<option value="{{ o.v }}">{{ o.l }}</option>{% endfor %}</select><button>Link existing payment</button></form>
+<form class="bar" method="post" action="{{ url_for('res_pay_create', rid=r.reservation_id) }}"><b>or create &amp; link:</b>
+<select name="payment_status_code">{% for s in pay_status %}<option>{{ s }}</option>{% endfor %}</select>
+<input type="date" name="payment_date" value="{{ today }}"><input type="number" name="payment_amount" step="0.01" placeholder="Amount"><button>Create &amp; link</button></form></section>
+
+<section><h2>Flight legs ({{ legs|length }})</h2>
+<div class="scroll"><table><tr><th>Leg</th><th>Flight</th><th>Route</th><th>Scheduled (UTC)</th><th>Actual (UTC)</th><th></th></tr>
+{% for l in legs %}<tr><td>{{ l.leg_id }}</td><td>{{ l.flight_number }}</td><td>{{ l.origin_airport_code }} → {{ l.destination_airport_code }}</td>
+<td>{{ l.scheduled_departure }} → {{ l.scheduled_arrival }}</td><td>{{ l.actual_departure or '—' }} → {{ l.actual_arrival or '—' }}</td>
+<td class="act"><form method="post" action="{{ url_for('res_leg_remove', rid=r.reservation_id, lid=l.leg_id) }}"><button class="link danger">Unlink</button></form></td></tr>
+{% else %}<tr><td colspan="6">No legs linked.</td></tr>{% endfor %}</table></div>
+<form class="bar" method="post" action="{{ url_for('res_leg_add', rid=r.reservation_id) }}"><select name="leg_id">{% for o in free_legs %}<option value="{{ o.v }}">{{ o.l }}</option>{% endfor %}</select><button>Add leg</button></form></section>
+{% endblock %}
